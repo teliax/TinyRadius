@@ -15,3 +15,13 @@ target
 # IntelliJ IDEA
 *.iml
 .idea/*
+
+# Gradle Caches
+.gradle/
+!gradle-wrapper.jar
+
+# Vim swap files
+*.swp
+
+# Local backup scratch
+*.bak
