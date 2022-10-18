@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'ai.clarity.codeartifact' version '0.0.12'
+}
+
+group 'com.teliax'
+version '1.0-SNAPSHOT'
+
+def codeArtifactToken = new ByteArrayOutputStream()
+exec {
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine './get_token_win_wrapper.bat'
+    } else {
+        commandLine './get_codeartifact_token.sh'
+    }
+    standardOutput = codeArtifactToken
+}
+
+repositories {
+    maven {
+        url "https://teliax-543937303105.d.codeartifact.us-west-2.amazonaws.com/maven/models/"
+        credentials {
+            username "aws"
+            password codeArtifactToken.toString().trim()
+        }
+    }
+}
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    implementation 'io.activej:activej-inject:5.4.3'
+    implementation 'io.activej:activej-promise:5.4.3'
+
+    implementation group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    implementation 'com.github.seancfoley:ipaddress:5.3.3'
+    implementation 'io.activej:activej-promise:5.4.3'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task getCodeArtifactToken(type: Exec) {
+
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
